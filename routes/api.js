@@ -25,8 +25,17 @@ router.get("/decimal/:base/:radixval", async (req, res) => {
   let valid = isNumeric(base);
   if (valid) {
     const base_val = parseInt(base);
-    if (isRadixString(radixval, base_val)) {
-      data = await toDecimal(radixval, base_val, 1024);
+    let str_val = radixval;
+    if (typeof radixval === 'string') {
+      if (radixval.indexOf('%2')> 0) {
+        str_val = radixval.replace(/%2F/i,'/');
+      }
+      if (radixval.indexOf(',')> 0) {
+        str_val = radixval.replace(/,/,'/');
+      }
+    }
+    if (isRadixString(str_val, base_val)) {
+      data = await toDecimal(str_val, base_val, 1024);
     }
   }
   res.send(data);
